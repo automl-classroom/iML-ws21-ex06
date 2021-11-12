@@ -1,4 +1,4 @@
-# Interpretable Machine Learning: Exercise 4
+# Interpretable Machine Learning: Exercise 6
 
 ## Instructions
 
