@@ -1,0 +1,110 @@
+\documentclass[a4paper]{article}
+\usepackage[a4paper,
+            bindingoffset=0.2in,
+            left=0.8in,
+            right=0.8in,
+            top=0.8in,
+            bottom=1.6in,
+            footskip=.8in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[]{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup{colorlinks = true}
+
+\usepackage{xcolor}
+
+\begin{document}
+
+{\noindent\LARGE Exercise 6\par}
+\vspace{8pt}
+{\noindent\huge\textbf{Gradient-based Explanations}}
+\vspace{20pt}
+
+\noindent
+Gradient-based approaches are among the most popular methods used for interpreting neural networks.
+They leverage white-box access to the neural network, as they rely on backpropagation to compute the gradients of an input with respect to a prediction.
+The intuition behind using gradients for explanatory purposes is that they tells us, how sensitive the prediction is to small changes in the input.
+In this assignment, we will generate different gradient-based explanations for a ResNet18 Model pretrained on the ImageNet Dataset by 1) applying off-the-shelf methods and 2) implementing gradient-based feature attribution from scratch.
+
+
+\vspace{10pt}
+\par\noindent\rule{\textwidth}{0.2pt}
+\begin{itemize}
+    \item You can get a bonus point for this exercise if you pass at least 85\% of the tests. Code is automatically tested after pushing. If your tests fail, either your code is wrong, or you solved the task differently. In the second case, we will manually check your solution.
+    \item Three collected bonus points result in a 0.33 increase of the final grade.
+    \item You are allowed to work in groups with up to three people. You do not need to specify your ErgebnisPIN as it is already collected from the entrance test.
+    \item Follow the `README.md` for further instructions.
+    \item Finish this exercise by \color{red}{24th November, 2021 at 11:59 pm.}
+\end{itemize}
+\par\noindent\rule{\textwidth}{0.2pt}
+\vspace{8pt}
+
+Note: This assignment requires installing new packages: \{torchvision, captum\}  (See \textit{requirements.txt})
+
+\section{Applying Gradient-based Feature Attribution Methods}
+In this first task, the goal is to use off-the-shelf implementations of different gradient-based feature attribution methods to obtain explanations.
+Here, we apply different methods implemented in \href{https://captum.ai/}{Captum}, a model interpretability library for \href{https://pytorch.org/}{PyTorch}.\\
+
+\noindent Associated file: \textit{tasks/explainers.py}.
+
+\subsection{Gradient}
+Complete \textit{get\_gradient} to produce a saliency map based on the gradient with respect to the model's prediction as the target class, for a given input image.
+Use \textit{\href{https://captum.ai/api/saliency.html}{captum.attr.Saliency}}.
+
+\subsection{Integrated Gradients}
+The Integrated Gradients method interpolates gradients between a non-informative baseline $\bar{x}$ and the actual input $x$.
+Complete \textit{get\_integrated\_gradients} to produce the Integrated Gradients with respect to the model's prediction as the target class, for a given input image.
+Use \textit{\href{https://captum.ai/api/integrated_gradients.html}{captum.attr.IntegratedGradients}}.
+
+\subsection{SmoothGrad}
+The SmoothGrad method helps to reduce noise by adding noise. 
+Complete \textit{get\_smoothgrad} to produce a smoothed saliency map for a given input image.
+Use \textit{\href{https://captum.ai/api/noise_tunnel.html}{captum.attr.NoiseTunnel}} in combination with \textit{\href{https://captum.ai/api/saliency.html}{captum.attr.Saliency}}.
+
+\subsection{Preparing Feature Attribution Maps for Visualization}
+The resulting feature attribution maps have the same dimensions as the input to the neural network.
+For visualization purposes, we often aggregate them to smaller dimensions to produce heatmap-like outputs.
+Complete \textit{aggregate\_attribution} that aggregates an attribution map with three color channels to a single color channel by summing over the channel dimension.
+
+For proper visualization, we additionally want to normalize the attribution maps.
+Complete \textit{normalize\_attribution} that first takes the absolute values of the attributions, then normalizes them into the range $[0, 1]$ by subtracting the minimum and afterwards dividing by the maximum.
+
+\subsection{Visualizing Feature Attributions}
+After generating all the explanations, we of course want to plot them.
+Complete the \textit{plot\_attributions} function that plots the image and the generated attributions in a row.
+
+
+\section{Gradient-based Feature Attribution from Scratch}
+Now, the task is to implement two of the methods from task 1 from scratch.
+
+\noindent Associated file: \textit{tasks/custom\_explainers.py}.
+
+\subsection{Gradient}
+Complete \textit{get\_custom\_gradient} that implements the simple gradient method:
+\begin{equation}
+    A = \frac{\partial f(x)_c}{\partial x_i}
+\end{equation}
+where $A$ is the resulting feature attribution map, $f$ is the neural network model, $x$ is an input image and $c$ is the index of the class we are interested in.
+That means $f(x)_c$ is the neural network output corresponding to class $c$. Here, the class we are interested in is the one that is predicted by the model.
+
+
+\subsection{Integrated Gradients}
+Now we want to implement the Integrated Gradients method from scratch.
+
+First, complete the \textit{get\_path} function, that creates a path of images.
+The path starts from a baseline, ends with the actual image and is filled with intermediate samples in between.
+This path essentially contains the samples
+\begin{equation}
+    \tilde{x} = \bar{x} + \alpha(x - \bar{x})
+\end{equation}
+where $\alpha=0$ for the baseline and $\alpha=1$ for the actual image.
+Here, we choose a black image as the baseline.\\
+
+Next, complete \textit{get\_custom\_integrated\_gradients} to generate the Integrated Gradients using the following equation:
+\begin{equation}
+    A = (x - \bar{x}) \times \int_{\alpha=0}^{1} \frac{\partial f(x)_c}{\partial \tilde{x_i}}\Bigg\rvert_{\tilde{x} = \bar{x} + \alpha(x - \bar{x})}
+\end{equation}
+where the integral is approximated by averaging the gradients for each sample in the path.
+
+\end{document}
