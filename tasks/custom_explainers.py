@@ -6,7 +6,7 @@ import torch
 from utils.styled_plot import plt
 from utils.dataset import load_test_image, preprocess_image, normalize_image, convert_idx_to_label
 from classifiers.cnn_classifier import ImageNetClassifier
-from solutions.explainers import plot_attributions, aggregate_attribution, normalize_attribution
+from tasks.explainers import plot_attributions, aggregate_attribution, normalize_attribution
 
 
 def get_custom_gradient(model, image, absolute=False):
