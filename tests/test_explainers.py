@@ -52,9 +52,9 @@ def test_get_integrated_gradients():
 def test_get_smoothgrad():
     smoothgrad = module.get_smoothgrad(model, image_preprocessed_norm)
     assert smoothgrad.shape == torch.Size([1, 3, 224, 224])
-    assert torch.allclose(smoothgrad[0, 0, 0, 0], torch.tensor(0.0002), atol=1e-3)
-    assert torch.allclose(smoothgrad.mean(), torch.tensor(0.0003), atol=1e-3)
-    assert torch.allclose(smoothgrad.sum(), torch.tensor(47.2648), atol=1)
+    assert torch.allclose(smoothgrad[0, 0, 0, 0], torch.tensor(0.0002).double(), atol=1e-3)
+    assert torch.allclose(smoothgrad.mean(), torch.tensor(0.0003).double(), atol=1e-3)
+    assert torch.allclose(smoothgrad.sum(), torch.tensor(47.2648).double(), atol=1)
 
 
 def test_aggregate_attribution():
