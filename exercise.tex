@@ -93,7 +93,7 @@ That means $f(x)_c$ is the neural network output corresponding to class $c$. Her
 Now we want to implement the Integrated Gradients method from scratch.
 
 First, complete the \textit{get\_path} function, that creates a path of images.
-The path starts from a baseline, ends with the actual image and is filled with intermediate samples in between.
+The path starts from a baseline $\bar{x}$, ends with the actual image $x$ and is filled with intermediate samples in between.
 This path essentially contains the samples
 \begin{equation}
     \tilde{x} = \bar{x} + \alpha(x - \bar{x})
