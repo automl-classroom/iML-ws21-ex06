@@ -28,8 +28,11 @@ def get_custom_gradient(model, image, absolute=False):
 
 def get_path(image, baseline, num_samples):
     """
-    Generate a attribution map based on the Integrated Gradients method, w.r.t. the model's prediction.
-    Uses zeros (black image) as the baseline, that are normalized using 'normalize_image'.
+    Creates the path of images used in Integrated Gradients.
+    The path starts from a baseline, ends with the actual image and is filled with intermediate samples in between.
+    Essentially, the path is defined as:
+        path = baseline + alpha * (image - baseline)
+    for alpha ranging from 0 to 1.
 
     Parameters:
         image (torch.tensor): Single image with shape (1, 3, ?, ?).
