@@ -86,8 +86,8 @@ def test_get_custom_integrated_gradients():
     ig = module.get_custom_integrated_gradients(model, image_preprocessed_norm.clone(), 50)
     assert ig.shape == torch.Size([1, 3, 224, 224])
     assert torch.allclose(ig[0, 0, 0, 0], torch.tensor(0.0010), atol=1e-2)
-    assert torch.allclose(ig.mean(), torch.tensor(0.0), atol=1e-2)
-    assert torch.allclose(ig.sum(), torch.tensor(0.9154), atol=1e-1)
+    assert torch.allclose(ig.mean(), torch.tensor(0.0), atol=2e-2)
+    assert torch.allclose(ig.sum(), torch.tensor(0.9154), atol=2e-1)
 
 
 if __name__ == "__main__":
